@@ -30,7 +30,6 @@ Cookie1 = ""
 
 #Cookie and Authorization Token of POST request https://www.okcupid.com/1/apitun/messages/send
 Cookie2 = ""
-Authorization2 = ""
 
 #Message
 message = ''
@@ -41,7 +40,7 @@ while True:
     try:
 
         
-        regex = r"(\"userinfo\" : \{\"realname\" : \")([a-zA-Z\s\d\w]*)(\", \"gender_letter\" : \")([\w]*)(\", \"gender\" : \")([a-zA-Z]*)(\", \"age\" : )([\d]*)(, \"rel_status\" : \")([a-zA-Z]*)(\", \"location\" : \")([a-zA-Z\d\\]*)(\", \"orientation\" : \")([a-zA-Z]*)(\", \"displayname\" : \")([a-zA-Z\d\s]*)(\", \"staff_badge\" : [a-zA-Z]*}, \"last_login\" : [\d]*, \"likes\" : {\"mutual_like_vote\" : [\d]*, \"recycled\" : [\d]*, \"passed_on\" : [\d]*, \"they_like\" : [a-zA-Z]*, \"you_like\" : [a-zA-Z]*, \"via_spotlight\" : [a-zA-Z]*, \"mutual_like\" : [\d]*, \"vote\" : \{\}\}, \"percentages\" : \{\"match\" : )([\d]*)(, \"enemy\" : [\d]*}, \"inactive\" : [a-zA-Z]*, \"userid\" : \")([\d]*)(\", \"username\" : \")([\da-zA-Z]*)(\", \"staff\" : [a-zA-Z]*, \"thumbs\" : \[\{\"[\d]*x[\d]*\" : \")([a-zA-Z\d\/\:\.\_]*)"
+        regex = r"(\"userinfo\" : \{\"realname\" : \")([a-zA-Z\s\d\w]*)(\", \"gender_letter\" : \")([\w]*)(\", \"gender\" : \")([a-zA-Z]*)(\", \"age\" : )([\d]*)(, \"join_date\" : )(\d*, \"rel_status\" \: \")([a-zA-Z]*)(\", \"location\" :\ \")([a-zA-Z\d\\\s]*)(\", \"orientation\" : \")([a-zA-Z]*)(\", \"displayname\" : \")([a-zA-Z\d\s]*)(\", \"staff_badge\" : [a-zA-Z]*}, \"last_login\" : [\d]*, \"likes\" : {\"mutual_like_vote\" : [\d]*, \"recycled\" : [\d]*, \"passed_on\" : [\d]*, \"they_like\" : [a-zA-Z]*, \"you_like\" : [a-zA-Z]*, \"via_spotlight\" : [a-zA-Z]*, \"mutual_like\" : [\d]*, \"vote\" : \{\}\}, \"percentages\" : \{\"match\" : )([\d]*)(, \"enemy\" : [\d]*}, \"inactive\" : [a-zA-Z]*, \"userid\" : \")([\d]*)(\", \"username\" : \")([\da-zA-Z]*)(\", \"staff\" : [a-zA-Z]*, \"thumbs\" : \[\{\"[\d]*x[\d]*\" : \")([a-zA-Z\d\/\:\.\_]*)"
         okcupiddata = open("okcupiddata.txt","a")
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         i = 0
@@ -64,6 +63,7 @@ while True:
                 request = requests.get(url, headers=headers, verify=False)    
                 response = (request.text.encode("utf-8"))
                 temp = open("temp.txt","w")
+                #print response
                 temp.write(response)
                 temp.close()
             except:
@@ -72,17 +72,19 @@ while True:
                 continue
             temp_read = open ("temp.txt","r")
             contents = temp_read.readlines()
+            #print contents
             for test_str in contents:
+                #print test_str
                 matches = re.finditer(regex, test_str, re.MULTILINE)
                 for matchNum, match in enumerate(matches, start=1):
-                    details = match.group(2)+","+match.group(4)+","+match.group(6)+","+match.group(8)+","+match.group(10)+","+match.group(12)+","+match.group(14)+","+match.group(16)+","+match.group(18)+","+match.group(20)+","+match.group(22)+","+match.group(24)
-                    userid = match.group(20)
+                    details = match.group(2)+","+match.group(8)+","+match.group(13)+","+match.group(19)+","+match.group(21)+","+match.group(23)+","+match.group(25)
+                    userid = match.group(21)
                     
                     with open ('okcupiddata.txt','a+') as f:
                         if userid in f.read():
                             print R+"[+]"+END+GR+"Message already sent to "+END+match.group(2)
                         else:
-                            print G+"[+]"+END+O+"Details Captured: "+END+match.group(2)+" "+match.group(8)+" "+match.group(12)+" "+match.group(18)+" "+match.group(20)+" "+match.group(22)+" "+match.group(24)
+                            print G+"[+]"+END+O+"Details Captured: "+END+match.group(2)+" "+match.group(8)+" "+match.group(13)+" "+match.group(19)+" "+match.group(21)+" "+match.group(23)+" "+match.group(25)
                             headers = {
                                 "Host": "www.okcupid.com",
                                 "User-Agent": "MMozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0 Cyberfox/52.9.1",
@@ -90,7 +92,6 @@ while True:
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "Accept-Encoding": "gzip, deflate",
                                 "x-okcupid-platform": "DESKTOP",
-                                "Authorization": Authorization2,
                                 "Content-Type": "text/plain;charset=UTF-8",
                                 "origin": "https://www.okcupid.com/",
                                 "Referer": "https://www.okcupid.com/profile/"+userid+"?cf=regular,matchsearch",
